@@ -28,6 +28,10 @@ gem 'bootsnap', '>= 1.1.0', require: false
 # Use faraday for HTTP lib
 gem 'faraday'
 
+# Use Elasticsearch library
+gem 'elasticsearch'
+
+
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
 
