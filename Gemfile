@@ -25,15 +25,14 @@ gem 'puma', '~> 3.11'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
 
-# Use faraday for HTTP lib
-gem 'faraday'
-
 # Use Elasticsearch library
 gem 'elasticsearch'
 
+# Use webpacker for Vue
+gem 'webpacker'
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
-# gem 'rack-cors'
+gem 'rack-cors'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

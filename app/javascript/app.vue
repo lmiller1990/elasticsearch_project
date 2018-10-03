@@ -1,0 +1,45 @@
+<template>
+  <div>
+    <SearchForm @submit="submit" />
+  </div>
+</template>
+
+<script>
+import axios from 'axios'
+import chartjs from 'chart.js'
+import SearchForm from './src/search_form.vue'
+
+export default {
+  components: {
+    SearchForm
+  },
+
+  created() {
+    console.log(chartjs)
+  },
+
+  data() {
+    return {
+    }
+  },
+
+  methods: {
+    submit({ start, end, interval }) {
+      axios.get('http://localhost:3001/page_views', {
+        params: {
+          after: start, 
+          before: end, 
+          interval
+        }
+      })
+        .then((res) => {
+          console.log(res)
+          console.log(res.data.aggregations.first_agg.buckets[0].second_agg)
+        })
+    }
+  }
+}
+</script>
+
+<style scoped>
+</style>
