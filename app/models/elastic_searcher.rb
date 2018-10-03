@@ -31,7 +31,8 @@ class ElasticSearcher
               {
                 from: opts[:after],
                 to: opts[:before],
-                size: 0
+                size: 0,
+                interval: '15m',
 
               }
             ]

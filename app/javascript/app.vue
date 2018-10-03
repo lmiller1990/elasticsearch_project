@@ -14,10 +14,6 @@ export default {
     SearchForm
   },
 
-  created() {
-    console.log(chartjs)
-  },
-
   data() {
     return {
     }
@@ -34,7 +30,6 @@ export default {
       })
         .then((res) => {
           console.log(res)
-          console.log(res.data.aggregations.first_agg.buckets[0].second_agg)
         })
     }
   }
