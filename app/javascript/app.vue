@@ -25,7 +25,7 @@ export default {
 
   methods: {
     submit({ start, end, interval }) {
-      axios.get('http://localhost:3001/page_views', {
+      axios.get('/page_views', {
         params: {
           after: start, 
           before: end, 
