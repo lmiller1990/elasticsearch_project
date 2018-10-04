@@ -1,26 +1,23 @@
 class PageViewsController < ApplicationController
 
   def index
-    puts params
     searcher = ElasticSearcher.new
-    puts 'before', page_view_params[:before]
-    puts 'after', page_view_params[:after]
+
     result = searcher.search({
-      urls: urls,
+      urls: get_urls,
       after: page_view_params[:after],
       before: page_view_params[:before],
       interval: page_view_params[:interval]
     })
 
-    # render json: JSON.pretty_generate(result)
-    render json: result
+    render json: JSON.pretty_generate(result)
   end
 
   private 
 
-  def urls
+  def get_urls
     if page_view_params[:urls]
-      page_view_params.split(',')
+      page_view_params[:urls].split(',')
     else
       []
     end

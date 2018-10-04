@@ -23,22 +23,35 @@ class ElasticSearcher
   def search(opts)
     @client.search index: 'events', type: 'event', body: {
       size: 0,
-      aggs: {
-        first_agg: {
-          range: {
-            field: 'derived_tstamp',
-            ranges: [
-              {
-                from: opts[:after],
-                to: opts[:before],
-                size: 0,
-                interval: '15m',
-
+      query: {
+        bool: {
+          must: [
+            {
+              range: {
+                derived_tstamp: {
+                  gte: opts[:after],
+                  lte: opts[:before],
+                  format: 'epoch_millis'
+                }
               }
-            ]
+            }
+          ],
+          filter: {
+            terms: {
+              page_url: opts[:urls]
+            }
+          }
+        }
+      },
+
+      aggs: {
+        group_by_derived_tstamp: {
+          terms: {
+            field: 'derived_tstamp'
           },
+
           aggs: {
-            second_agg: {
+            group_by_page_url: {
               terms: {
                 field: 'page_url'
               }
@@ -47,6 +60,5 @@ class ElasticSearcher
         }
       }
     }
-
   end
 end

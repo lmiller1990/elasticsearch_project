@@ -20,12 +20,13 @@ export default {
   },
 
   methods: {
-    submit({ start, end, interval }) {
+    submit({ start, end, interval, urls }) {
       axios.get('/page_views', {
         params: {
           after: start, 
           before: end, 
-          interval
+          interval,
+          urls
         }
       })
         .then((res) => {
