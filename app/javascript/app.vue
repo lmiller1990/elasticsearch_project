@@ -1,6 +1,9 @@
 <template>
   <div>
     <SearchForm @submit="submit" />
+    <pre>
+      {{ JSON.stringify(response, null, 2) }}
+    </pre>
   </div>
 </template>
 
@@ -16,6 +19,7 @@ export default {
 
   data() {
     return {
+      response: {}
     }
   },
 
@@ -30,6 +34,7 @@ export default {
         }
       })
         .then((res) => {
+          this.response = res
           console.log(res)
         })
     }
