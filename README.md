@@ -1,221 +1,44 @@
+Welcome to the Elasticsearch test app.
+
 ## Running
 
-### Set up environment variables
+### On Heroku
+
+Just visit https://hidden-lake-93827.herokuapp.com/spa
+
+### Set up environment variables (running locally)
 
 - `cp env.yml.example env.yml`
 - enter the credentials for the elasticsearch cluster
-
-`rails server`
-
+- `bundle install` and `yarn install` for dependencies
+- `bin/rails server` in one terminal, `bin/webpack-dev-server` in another.
+- `localhost:3000/spa`.
 
 ## Task 1
 
-This is the progression I used to write the query using Kibana to test.
-
-First I got all events for a url: 
-
-```json
-GET /events/_search
-{
-  "size": 0,
-  "query": {
-    "bool": {
-      "should": {
-        "match": {
-          "page_url": "http://www.news.com.au/travel/travel-updates/incidents/disruptive-passenger-grounds-flight-after-storming-cockpit/news-story/5949c1e9542df41fb89e6cdcdc16b615"
-        }   
-      }
-    }
-  }
-}
-```
-
-Next I performed the double aggregation:
-
-```json
-GET /events/_search
-{
-  "size": 0,
-  "query": {
-    "bool": {
-      "should": {
-        "match": {
-          "page_url": "http://www.news.com.au/travel/travel-updates/incidents/disruptive-passenger-grounds-flight-after-storming-cockpit/news-story/5949c1e9542df41fb89e6cdcdc16b615"
-        }
-      }
-    }
-  },
-  "aggs": {
-    "group_by_derived_tstamp": {
-      "terms": {
-        "field": "derived_tstamp"
-      },
-      "aggs": {
-        "group_by_page_url": {
-          "terms": {
-            "field": "page_url"
-          }
-        }
-      }
-    }
-  }
-}
-```
-
-Next I included the timestamps:
-
-- 1496307600000 -> 2017/06/01 9:00:00 AM GMT+09:00
-- 1496307660000 -> 2017/06/01 6:01:00 PM GMT+09:00
-
-```json
-GET /events/_search
-{
-  "size": 0,
-  "query": {
-    "bool": {
-      "must": [
-        {
-          "match": {
-            "page_url": "http://www.news.com.au/travel/travel-updates/incidents/disruptive-passenger-grounds-flight-after-storming-cockpit/news-story/5949c1e9542df41fb89e6cdcdc16b615"
-          }
-        },
-        {
-          "range": {
-            "derived_tstamp": {
-              "gte": 1496307600000,
-              "lte": 1496307660000,
-              "format": "epoch_millis"
-            }
-          }
-        }
-      ]
-    }
-  },
-  "aggs": {
-    "group_by_derived_tstamp": {
-      "terms": {
-        "field": "derived_tstamp"
-      },
-      "aggs": {
-        "group_by_page_url": {
-          "terms": {
-            "field": "page_url"
-          }
-        }
-      }
-    }
-  }
-}
-```
-
-Finally, query multiple urls:
-
-```json
-GET /events/_search
-{
-  "size": 0,
-  "query": {
-    "bool": {
-      "must": [
-        {
-          "range": {
-            "derived_tstamp": {
-              "gte": 1496307600000,
-              "lte": 1496307680000,
-              "format": "epoch_millis"
-            }
-          }
-        }
-      ],
-      "filter": {
-        "terms": {
-          "page_url": [
-            "http://www.smh.com.au/nsw/premier-gladys-berejiklian-announces-housing-affordability-reforms-20170601-gwi0jn.html",
-            "http://www.news.com.au/travel/travel-updates/incidents/disruptive-passenger-grounds-flight-after-storming-cockpit/news-story/5949c1e9542df41fb89e6cdcdc16b615"
-            ]
-        }
-      }
-    }
-  },
-  
-  "aggs": {
-    "group_by_derived_tstamp": {
-      "terms": {
-        "field": "derived_tstamp"
-      },
-      "aggs": {
-        "group_by_page_url": {
-          "terms": {
-            "field": "page_url"
-          }
-        }
-      }
-    }
-  }
-}
-```
-
-I am not sure where the `interval` should go.
-
-I then tested the query like this: visit `/page_views` with a querystring:
-
-```
-http://localhost:3000/page_views?after=1496307600000&before=1496307660000&urls=http://www.news.com.au/travel/travel-updates/incidents/disruptive-passenger-grounds-flight-after-storming-cockpit/news-story/5949c1e9542df41fb89e6cdcdc16b615,http://www.smh.com.au/nsw/premier-gladys-berejiklian-announces-housing-affordability-reforms-20170601-gwi0jn.html
-```
-
-## Using date_histogram
-
-It turns out you can use date_histogram to aggregate with a set interval like this:
-
-```
-GET /events/_search
-{
-  "size": 0,
-  "query": {
-    "bool": {
-      "must": [
-        {
-          "range": {
-            "derived_tstamp": {
-              "gte": 1496307600000,
-              "lte": 1496307680000,
-              "format": "epoch_millis"
-            }
-          }
-        }
-      ],
-      "filter": {
-        "terms": {
-          "page_url": [
-            "http://www.smh.com.au/nsw/premier-gladys-berejiklian-announces-housing-affordability-reforms-20170601-gwi0jn.html",
-            "http://www.news.com.au/travel/travel-updates/incidents/disruptive-passenger-grounds-flight-after-storming-cockpit/news-story/5949c1e9542df41fb89e6cdcdc16b615"
-            ]
-        }
-      }
-    }
-  },
-  "aggs": {
-    "by_interval": {
-      "date_histogram": {
-        "field": "derived_tstamp",
-        "interval": "15m"
-      },
-      "aggs": {
-        "by_url": {
-          "terms": {
-            "field": "page_url",
-            "size": 10
-          }
-        }
-      }
-    }
-  }
-}
-```
+`/page_views` is a JSON API. It is used in Task 2. The relevant files are [`page_views_controller.rb`](https://github.com/lmiller1990/elasticsearch_project/blob/master/app/controllers/page_views_controller.rb) and [`elastic_searcher.rb`](https://github.com/lmiller1990/elasticsearch_project/blob/master/app/models/elastic_searcher.rb).
 
 ## Task 2
 
-Visit `/spa` and sumbit the form as is. Check the console.log for the response. The result is a double aggregation:
+Visit `/spa` locally, or https://hidden-lake-93827.herokuapp.com/spa to try it out. You can use the default date/times and urls, just hit "Submit". You can also try out other intervals, urls, etc.
 
-data -> aggregations -> group_by_derived_tstamp -> buckets -> group_by_page_url -> buckets
+## Technologies
 
+The backend is just plain old Rails with the recommended elasticsearcher gem. The frontend is using Vue, and integrated to the Rails asset pipeline using the [Webpacker](https://github.com/rails/webpacker) gem. The Vue code is in `app/javascript`. The chart library is [Chart.js](http://www.chartjs.org/).
+
+## Tests
+
+`rspec spec` to run the Rails tests. The only test is place is a very simple controller spec, which isn't very useful, anyway.
+`yarn test` for the front end tests. I found TDD useful when writing the function to parse the elastic search JSON response to match the Graph.js API, which is the graph library I used.
+
+## Conclusion and Improvements 
+
+I would like to improve this demo by:
+
+1. Elasticsearch test server, for improved back end tests. Maybe using something like recommended [here](https://medium.com/@rowanoulton/testing-elasticsearch-in-rails-22a3296d989).
+2. E2E tests. Using something like Cypress.io to visit SPA, and boot an elasticsearch test server. Visit `/spa` and submit the form, then assert something the chart is rendered.
+
+## Lessons Learned
+
+- I learned about elasticsearch, which seems like a very powerful tool. 
+- I decided to try Chart.js out, it seems pretty nice for simple graphs, I am not sure how well it would scale for large, complex graphs.

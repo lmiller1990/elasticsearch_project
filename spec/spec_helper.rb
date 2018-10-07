@@ -13,7 +13,17 @@
 # it.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+require 'elasticsearch/extensions/test/cluster'
+
 RSpec.configure do |config|
+
+  config.before :all, elasticsearch: true do
+    Elasticsearch::Extensions::Test::Cluster.start(port: 9250, nodes: 1, timeout: 120) unless Elasticsearch::Extensions::Test::Cluster.running?(on: 9250)
+  end
+
+  config.after :suite do
+    Elasticsearch::Extensions::Test::Cluster.stop(port: 9250, nodes: 1) if Elasticsearch::Extensions::Test::Cluster.running?(on: 9250)
+  end
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
