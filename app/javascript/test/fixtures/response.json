@@ -1,0 +1,34 @@
+{
+  "buckets": [
+    {
+      "key_as_string": "2017-06-01T03:15:00.000Z",
+      "by_url": {
+        "buckets": [
+          {
+            "key": "https://news.com.au",
+            "doc_count": 1
+          },
+          {
+            "key": "https://smh.com.au",
+            "doc_count": 2
+          }
+        ]
+      }
+    },
+    {
+      "key_as_string": "2017-06-01T03:30:00.000Z",
+      "by_url": {
+        "buckets": [
+          {
+            "key": "https://news.com.au",
+            "doc_count": 3
+          },
+          {
+            "key": "https://smh.com.au",
+            "doc_count": 4
+          }
+        ]
+      }
+    }
+  ]
+}

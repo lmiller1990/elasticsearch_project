@@ -21,39 +21,41 @@ class ElasticSearcher
   # - after Date
   # - interval int + units. eg: '15m'
   def search(opts)
+    puts opts
     @client.search index: 'events', type: 'event', body: {
-      size: 0,
-      query: {
-        bool: {
-          must: [
+      "size": 0,
+      "query": {
+        "bool": {
+          "must": [
             {
-              range: {
-                derived_tstamp: {
-                  gte: opts[:after],
-                  lte: opts[:before],
-                  format: 'epoch_millis'
+              "range": {
+                "derived_tstamp": {
+                  "gte": opts[:after], # 1496307600000,
+                  "lte": opts[:before], # 1496307990000,
+                  "format": "epoch_millis"
                 }
               }
             }
           ],
-          filter: {
-            terms: {
-              page_url: opts[:urls]
+          "filter": {
+            "terms": {
+              "page_url": opts[:urls]
             }
           }
         }
       },
-
-      aggs: {
-        group_by_derived_tstamp: {
-          terms: {
-            field: 'derived_tstamp'
+      "aggs": {
+        "by_interval": {
+          "date_histogram": {
+            "field": "derived_tstamp",
+            "interval": "#{opts[:interval]}m",
+            #"size": 0
           },
-
-          aggs: {
-            group_by_page_url: {
-              terms: {
-                field: 'page_url'
+          "aggs": {
+            "by_url": {
+              "terms": {
+                "field": "page_url",
+                #"size": 10
               }
             }
           }

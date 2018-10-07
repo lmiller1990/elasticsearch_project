@@ -3,12 +3,32 @@
     "@rails/webpacker": "3.5",
     "axios": "^0.18.0",
     "chart.js": "^2.7.2",
+    "moment": "^2.22.2",
     "vue": "^2.5.17",
     "vue-chartjs": "^3.4.0",
     "vue-loader": "14.2.2",
     "vue-template-compiler": "^2.5.17"
   },
   "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-jest": "^23.6.0",
+    "jest": "^23.6.0",
     "webpack-dev-server": "2.11.2"
+  },
+  "scripts": {
+    "test": "yarn jest"
+  },
+  "jest": {
+    "modulePaths": [
+      "app/javascript/src"
+    ],
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    },
+    "testPathIgnorePatterns": [
+      "<rootDir>/config/",
+      "<rootDir>/node_modules/",
+      "<rootDir>/vendor/"
+    ]
   }
 }
