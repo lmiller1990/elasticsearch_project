@@ -1,5 +1,5 @@
 require 'rails_helper'
 
-RSpec.describe ElasticSearchController, type: :controller do
+RSpec.describe PageViewsController, type: :controller do
 
 end

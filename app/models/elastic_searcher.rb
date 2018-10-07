@@ -1,6 +1,5 @@
 class ElasticSearcher
   # API docs https://www.rubydoc.info/gems/elasticsearch-api
-  #
   def initialize
     @client = Elasticsearch::Client.new hosts: [
       {
@@ -11,7 +10,6 @@ class ElasticSearcher
         scheme: ENV['schema']
       }
     ]
-    # log: true
   end
 
   # @param opts {Hash} hash containing options for query, including:
@@ -21,7 +19,6 @@ class ElasticSearcher
   # - after Date
   # - interval int + units. eg: '15m'
   def search(opts)
-    puts opts
     @client.search index: 'events', type: 'event', body: {
       "size": 0,
       "query": {
@@ -30,8 +27,8 @@ class ElasticSearcher
             {
               "range": {
                 "derived_tstamp": {
-                  "gte": opts[:after], # 1496307600000,
-                  "lte": opts[:before], # 1496307990000,
+                  "gte": opts[:after],
+                  "lte": opts[:before],
                   "format": "epoch_millis"
                 }
               }
@@ -49,13 +46,11 @@ class ElasticSearcher
           "date_histogram": {
             "field": "derived_tstamp",
             "interval": "#{opts[:interval]}m",
-            #"size": 0
           },
           "aggs": {
             "by_url": {
               "terms": {
                 "field": "page_url",
-                #"size": 10
               }
             }
           }

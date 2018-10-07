@@ -1,12 +1,7 @@
 <template>
   <div>
     <SearchForm @submit="submit" />
-    <canvas id="ctx"></canvas>
-    <!--
-    <pre>
-      {{ JSON.stringify(response, null, 2) }}
-    </pre>
-    -->
+    <div id="chart"></div>
   </div>
 </template>
 
@@ -28,6 +23,13 @@ export default {
   },
 
   methods: {
+    createCanvas() {
+      const canvas = document.createElement('canvas')
+      canvas.setAttribute('id', 'ctx')
+
+      return canvas
+    },
+
     submit({ start, end, interval, urls }) {
       axios.get('/page_views', {
         params: {
@@ -38,7 +40,15 @@ export default {
         }
       })
         .then((res) => {
-          // this.response = res
+          // destroy and recreate chart
+          const chartWrapper = this.$el.querySelector('#chart')
+          if (chartWrapper.querySelector('#ctx')) {
+            chartWrapper.removeChild(chartWrapper.querySelector('#ctx'))
+          }
+
+          const canvas = this.createCanvas()
+          this.$el.querySelector('#chart').appendChild(canvas)
+
           const data = res.data.aggregations.by_interval.buckets
           this.drawGraph(data)
         })
@@ -51,25 +61,8 @@ export default {
       new Chart(ctx, {
         type: 'bar',
         data: {
-          labels, // : ['9:00', '10:00', '11:00'],
+          labels,
           datasets: dataset
-
-          /*
-          datasets: [
-            {
-              label: 'AAAA',
-              data: [130, 140, 150],
-              backgroundColor: 'red'
-            },
-            {
-              data: [230, 130, 350],
-              backgroundColor: 'blue'
-            },
-            {
-              data: [190, 290, 210],
-              backgroundColor: 'red'
-            },
-          ]*/
         },
 
         options: {

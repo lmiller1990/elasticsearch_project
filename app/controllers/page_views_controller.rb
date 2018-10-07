@@ -5,8 +5,8 @@ class PageViewsController < ApplicationController
 
     result = searcher.search({
       urls: get_urls,
-      after: page_view_params[:after],
-      before: page_view_params[:before],
+      after: page_view_params[:after].to_i,
+      before: page_view_params[:before].to_i,
       interval: page_view_params[:interval]
     })
 

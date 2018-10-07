@@ -36,13 +36,19 @@
  *  number of events.
  *
  */
+
+// some random colors for the graph
+const colors = 'red blue green yellow blue pink'.split(' ')
+
 export function parseResponse(buckets) {
   const urlsWithCount = {}
   const urls = getUniqueUrls(buckets)
 
-  for (const url of urls) {
+  for (let u in urls) {
+    const url = urls[u]
     urlsWithCount[url] = {}
     urlsWithCount[url]['counts'] = []
+    urlsWithCount[url]['color'] = colors[u] || 'purple'
   }
 
   const labels = []
@@ -67,7 +73,8 @@ export function parseResponse(buckets) {
     // format for chart.js
     dataset.push({
       label: d,
-      data: urlsWithCount[d].counts
+      data: urlsWithCount[d].counts,
+      backgroundColor: urlsWithCount[d].color
     })
   }
 

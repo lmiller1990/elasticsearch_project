@@ -6,10 +6,11 @@ describe('parseResponse', () => {
     const { labels, dataset } = parseResponse(buckets)
 
     expect(labels).toEqual(['03:15', '03:30'])
-    expect(dataset).toEqual([
-      { label: 'https://news.com.au', data: [ 1, 3 ] },
-      { label: 'https://smh.com.au', data: [ 2, 4 ] }
-    ])
+
+    expect(dataset[0].label).toBe('https://news.com.au')
+    expect(dataset[0].data).toEqual([ 1, 3 ])
+    expect(dataset[1].label).toBe('https://smh.com.au')
+    expect(dataset[1].data).toEqual([ 2, 4 ])
   })
 })
 
