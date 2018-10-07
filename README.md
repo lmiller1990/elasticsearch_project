@@ -31,6 +31,14 @@ The backend is just plain old Rails with the recommended elasticsearcher gem. Th
 `rspec spec` to run the Rails tests. The only test is place is a very simple controller spec, which isn't very useful, anyway.
 `yarn test` for the front end tests. I found TDD useful when writing the function to parse the elastic search JSON response to match the Graph.js API, which is the graph library I used.
 
+## Challenges
+
+The main challenges encountered were:
+
+- learning Elasticsearch and writing the query. I had not used elasticsearch before, and took a little bit of time to realize I should use `date_histogram` to aggregate the data.
+
+- Parsing the JSON response on the front end. The code for that is [here](https://github.com/lmiller1990/elasticsearch_project/blob/master/app/javascript/src/parse_response.js) and the tests are [here](https://github.com/lmiller1990/elasticsearch_project/blob/master/app/javascript/test/parse_response.spec.js). The Vue app is fairly trivial, the main challenge for the frontend was parsing the elasticsearch response to the correct form to be used with Chart.js. Using TDD was very useful here.
+
 ## Conclusion and Improvements 
 
 I would like to improve this demo by:
